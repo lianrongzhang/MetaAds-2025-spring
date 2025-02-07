@@ -1,0 +1,36 @@
+name: Facebook Ads Downloader
+
+on: push
+
+jobs:
+  download_ads:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        people: ["DPP", "Hsiao Bi-khim", "Lai Ching-te"]
+        platform: ["FACEBOOK", "INSTAGRAM"]
+    steps:
+      - name: 🚀 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install selenium beautifulsoup4 requests pandas
+          sudo apt-get update && sudo apt-get install -y chromium-chromedriver
+
+      - name: 🔍 Run Ad Image Scraper
+        env:
+          JSON_FILE: ${{ matrix.people }}_${{ matrix.platform }}.json
+          OUTPUT_DIR: "DPP_images"
+        run: |
+          python main.py --json_file "$JSON_FILE" --output_dir "$OUTPUT_DIR"
+
+      - name: 📂 Upload results to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: DPP_images
