@@ -26,15 +26,24 @@ jobs:
       - name: 🔍 Run Ad Image Scraper
         env:
           JSON_FILE: DPP/${{ matrix.people }}_${{ matrix.platform }}.json
-          OUTPUT_DIR: "DPP_images"
+          OUTPUT_DIR: "DPP_images/${{ matrix.people }}_${{ matrix.platform }}"
         id: scraper
         run: |
           python main.py --json_file "$JSON_FILE" --output_dir "$OUTPUT_DIR"
-        continue-on-error: true  # 允許 Python 返回 78 時不讓 workflow 失敗
+        continue-on-error: true
+
+      - name: 🛠️ Check if output directory exists
+        id: check_dir
+        run: |
+          if [ -d "DPP_images/${{ matrix.people }}_${{ matrix.platform }}" ] && [ "$(ls -A DPP_images/${{ matrix.people }}_${{ matrix.platform }})" ]; then
+            echo "UPLOAD=true" >> $GITHUB_ENV
+          else
+            echo "UPLOAD=false" >> $GITHUB_ENV
+          fi
 
       - name: 📂 Upload results to GitHub
         uses: actions/upload-artifact@v4
         with:
-          name: DPP_images
-          path: DPP_images
-        if: success() && steps.scraper.outcome == 'success'  # 只有 scraper 成功時才上傳
+          name: DPP_images_${{ matrix.people }}_${{ matrix.platform }}  # 確保 artifact 名稱唯一
+          path: DPP_images/${{ matrix.people }}_${{ matrix.platform }}
+        if: env.UPLOAD == 'true'
