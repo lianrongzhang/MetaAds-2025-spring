@@ -33,6 +33,7 @@ with open(json_file, 'r', encoding='utf-8') as f:
 
 if len(data) == 0:
     print("❌ JSON 檔案為空")
+    sys.exit(78)
 
 # 解析 JSON
 data_list = []
