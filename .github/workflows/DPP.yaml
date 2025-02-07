@@ -36,4 +36,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: DPP_images
+          path: DPP_images
         if: success() && steps.scraper.outcome == 'success'  # 只有 scraper 成功時才上傳
