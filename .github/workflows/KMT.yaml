@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        people: ["DPP", "Hsiao_Bi-khim", "Lai_Ching-te"]
+        people: ["KMT", "Hou_Yu-ih", "Jaw_Shau-Kong"]
         platform: ["FACEBOOK", "INSTAGRAM"]
     steps:
       - name: 🚀 Checkout repository
@@ -25,8 +25,8 @@ jobs:
 
       - name: 🔍 Run Ad Image Scraper
         env:
-          JSON_FILE: DPP/${{ matrix.people }}_${{ matrix.platform }}.json
-          OUTPUT_DIR: "DPP_images/${{ matrix.people }}_${{ matrix.platform }}"
+          JSON_FILE: KMT/${{ matrix.people }}_${{ matrix.platform }}.json
+          OUTPUT_DIR: "KMT_images/${{ matrix.people }}_${{ matrix.platform }}"
         id: scraper
         run: |
           python main.py --json_file "$JSON_FILE" --output_dir "$OUTPUT_DIR"
@@ -35,7 +35,7 @@ jobs:
       - name: 🛠️ Check if output directory exists
         id: check_dir
         run: |
-          if [ -d "DPP_images/${{ matrix.people }}_${{ matrix.platform }}" ] && [ "$(ls -A DPP_images/${{ matrix.people }}_${{ matrix.platform }})" ]; then
+          if [ -d "KMT_images/${{ matrix.people }}_${{ matrix.platform }}" ] && [ "$(ls -A KMT_images/${{ matrix.people }}_${{ matrix.platform }})" ]; then
             echo "UPLOAD=true" >> $GITHUB_ENV
           else
             echo "UPLOAD=false" >> $GITHUB_ENV
@@ -44,6 +44,6 @@ jobs:
       - name: 📂 Upload results to GitHub
         uses: actions/upload-artifact@v4
         with:
-          name: DPP_images_${{ matrix.people }}_${{ matrix.platform }}  # 確保 artifact 名稱唯一
-          path: DPP_images/${{ matrix.people }}_${{ matrix.platform }}
+          name: KMT_images_${{ matrix.people }}_${{ matrix.platform }}  # 確保 artifact 名稱唯一
+          path: KMT_images/${{ matrix.people }}_${{ matrix.platform }}
         if: env.UPLOAD == 'true'
