@@ -27,10 +27,13 @@ jobs:
         env:
           JSON_FILE: DPP/${{ matrix.people }}_${{ matrix.platform }}.json
           OUTPUT_DIR: "DPP_images"
+        id: scraper
         run: |
           python main.py --json_file "$JSON_FILE" --output_dir "$OUTPUT_DIR"
+        continue-on-error: true  # 允許 Python 返回 78 時不讓 workflow 失敗
 
       - name: 📂 Upload results to GitHub
         uses: actions/upload-artifact@v4
         with:
           name: DPP_images
+        if: success() && steps.scraper.outcome == 'success'  # 只有 scraper 成功時才上傳
