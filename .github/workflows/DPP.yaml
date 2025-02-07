@@ -25,7 +25,7 @@ jobs:
 
       - name: 🔍 Run Ad Image Scraper
         env:
-          JSON_FILE: ${{ matrix.people }}_${{ matrix.platform }}.json
+          JSON_FILE: DPP/${{ matrix.people }}_${{ matrix.platform }}.json
           OUTPUT_DIR: "DPP_images"
         run: |
           python main.py --json_file "$JSON_FILE" --output_dir "$OUTPUT_DIR"
